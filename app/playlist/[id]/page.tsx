@@ -14,7 +14,11 @@ export default function PlaylistDetails({ params }: { params: { id: string } }) 
         const fetchAllTracks = async (token: string, playlistId: string, offset = 0) => {
             try {
                 const data = await fetchPlaylistTracks(token, playlistId, offset);
-                setTracks(prevTracks => [...prevTracks, ...data.items]);
+                setTracks(prevTracks => {
+                    const trackSet = new Set(prevTracks.map(track => track.track.id));
+                    const newTracks = data.items.filter((track: any) => !trackSet.has(track.track.id));
+                    return [...prevTracks, ...newTracks];
+                });
 
                 if (data.next) {
                     await fetchAllTracks(token, playlistId, offset + data.limit);
