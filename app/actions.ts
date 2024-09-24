@@ -51,8 +51,39 @@ export async function fetchUserPlaylists(accessToken: string, url = 'https://api
     }
 }
 
-export async function fetchPlaylist(accessToken: string, id: string, offset = 0, limit = 100) {
+export async function fetchPlaylistDetails(accessToken: string, id: string) {
+    const response = await fetch(`https://api.spotify.com/v1/playlists/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        return data;
+    } else {
+        return { error: data.error };
+    }
+}
+
+export async function fetchPlaylistTracks(accessToken: string, id: string, offset = 0, limit = 100) {
     const response = await fetch(`https://api.spotify.com/v1/playlists/${id}/tracks?offset=${offset}&limit=${limit}`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        return data;
+    } else {
+        return { error: data.error };
+    }
+}
+export async function fetchUserProfile(accessToken: string) {
+    const response = await fetch('https://api.spotify.com/v1/me', {
         headers: {
             'Authorization': `Bearer ${accessToken}`,
         },

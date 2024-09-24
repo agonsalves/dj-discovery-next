@@ -1,18 +1,20 @@
 'use client'
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { fetchUserPlaylists } from '@/app/actions';
+import { fetchUserPlaylists, fetchUserProfile } from '@/app/actions';
 
 interface SpotifyTokenContextProps {
     accessToken: string | null;
     playlists: any[] | null;
+    userProfile: any | null;
 }
 
-const SpotifyTokenContext = createContext<SpotifyTokenContextProps | undefined>(undefined);
+const SpotifyContext = createContext<SpotifyTokenContextProps | undefined>(undefined);
 
 export const SpotifyTokenProvider = ({ children }: { children: ReactNode }) => {
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [playlists, setPlaylists] = useState<any[] | null>(null);
+    const [userProfile, setUserProfile] = useState<any | null>(null);
 
     useEffect(() => {
         const getPlaylists = async (token: string) => {
@@ -21,6 +23,15 @@ export const SpotifyTokenProvider = ({ children }: { children: ReactNode }) => {
                 setPlaylists(playlistsData);
             } else {
                 console.error('Failed to fetch playlists:', playlistsData.error);
+            }
+        }
+
+        const getUserProfile = async (token: string) => {
+            const profileData = await fetchUserProfile(token);
+            if (!profileData.error) {
+                setUserProfile(profileData);
+            } else {
+                console.error('Failed to fetch user profile:', profileData.error);
             }
         }
 
@@ -40,18 +51,19 @@ export const SpotifyTokenProvider = ({ children }: { children: ReactNode }) => {
 
         if (accessToken) {
             getPlaylists(accessToken);
+            getUserProfile(accessToken);
         }
     }, [accessToken]);
 
     return (
-        <SpotifyTokenContext.Provider value={{ accessToken, playlists }}>
+        <SpotifyContext.Provider value={{ accessToken, playlists, userProfile }}>
             {children}
-        </SpotifyTokenContext.Provider>
+        </SpotifyContext.Provider>
     );
 };
 
-export const useSpotifyToken = () => {
-    const context = useContext(SpotifyTokenContext);
+export const useSpotify = () => {
+    const context = useContext(SpotifyContext);
     if (context === undefined) {
         throw new Error('useSpotifyToken must be used within a SpotifyTokenProvider');
     }

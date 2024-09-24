@@ -1,4 +1,4 @@
-import { SpotifyTokenProvider } from '@/app/context/SpotifyTokenContext';
+import { SpotifyTokenProvider } from '@/app/context/SpotifyContext';
 
 export const metadata = {
   title: 'Next.js',
