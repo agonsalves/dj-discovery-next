@@ -24,16 +24,22 @@ export const SpotifyTokenProvider = ({ children }: { children: ReactNode }) => {
             }
         }
 
-        if (accessToken) {
-            getPlaylists(accessToken);
+        const storedToken = localStorage.getItem('access_token');
+        if (storedToken) {
+            setAccessToken(storedToken);
         } else {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('access_token');
 
             if (token) {
                 setAccessToken(token);
+                localStorage.setItem('access_token', token);
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
+        }
+
+        if (accessToken) {
+            getPlaylists(accessToken);
         }
     }, [accessToken]);
 
