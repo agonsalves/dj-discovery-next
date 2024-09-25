@@ -1,4 +1,4 @@
-import { SpotifyTokenProvider } from '@/app/context/SpotifyContext';
+import { SpotifyProvider } from '@/app/context/SpotifyContext';
 
 export const metadata = {
   title: 'Next.js',
@@ -13,7 +13,7 @@ export default function RootLayout({
   return (
       <html lang="en">
       <body>
-      <SpotifyTokenProvider>{children}</SpotifyTokenProvider>
+      <SpotifyProvider>{children}</SpotifyProvider>
       </body>
       </html>
   )
